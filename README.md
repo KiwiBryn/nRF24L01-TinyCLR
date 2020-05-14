@@ -1,4 +1,4 @@
-# nRF24L01TinyCLR
+# nRF24L01-TinyCLR
 C# Nordic Semiconductor [nRF24L01](https://www.nordicsemi.com/Products/Low-power-short-range-wireless/nRF24-series) library for
 [GHI Electronics](https://www.ghielectronics.com/) [TinyCLR](https://www.ghielectronics.com/tinyclr/) devices.
 
