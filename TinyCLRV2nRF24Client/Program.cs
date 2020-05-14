@@ -32,48 +32,53 @@ namespace devMobile.IoT.FieldGateway.TinyCLRV2nRF24Client
 
       static void Main()
       {
-         RF24 Radio = new RF24();
+         RF24 radio = new RF24();
+         byte messageCount = System.Byte.MaxValue;
 
          try
          {
-            Radio.OnDataReceived += Radio_OnDataReceived;
-            Radio.OnTransmitFailed += Radio_OnTransmitFailed;
-            Radio.OnTransmitSuccess += Radio_OnTransmitSuccess;
+            radio.OnDataReceived += Radio_OnDataReceived;
+            radio.OnTransmitFailed += Radio_OnTransmitFailed;
+            radio.OnTransmitSuccess += Radio_OnTransmitSuccess;
 
-            // SC20100.GpioPin.PD3
-            Radio.Initialize(SC20100.SpiBus.Spi3, SC20100.GpioPin.PD4, SC20100.GpioPin.PD3, SC20100.GpioPin.PC5);
-            Radio.Address = Encoding.UTF8.GetBytes(DeviceAddress);
+            // SC20100 Socket 1
+            //Radio.Initialize(SC20100.SpiBus.Spi3, SC20100.GpioPin.PD4, SC20100.GpioPin.PD3, SC20100.GpioPin.PC5);
+            // SC20100 Socket 2
+            radio.Initialize(SC20100.SpiBus.Spi3, SC20100.GpioPin.PD15, SC20100.GpioPin.PD14, SC20100.GpioPin.PA8);
+            radio.Address = Encoding.UTF8.GetBytes(DeviceAddress);
 
-            Radio.Channel = 15;
+            radio.Channel = 15;
             //Radio.PowerLevel = PowerLevel.Max;
             //Radio.PowerLevel = PowerLevel.High;
             //Radio.PowerLevel = PowerLevel.Low;
             //Radio.PowerLevel = PowerLevel.Minimum
-            Radio.DataRate = DataRate.DR250Kbps;
+            radio.DataRate = DataRate.DR250Kbps;
             //Radio.DataRate = DataRate.DR1Mbps;
-            Radio.IsEnabled = true;
+            radio.IsEnabled = true;
 
-            Radio.IsAutoAcknowledge = true;
-            Radio.IsDyanmicAcknowledge = false;
-            Radio.IsDynamicPayload = true;
+            radio.IsAutoAcknowledge = true;
+            radio.IsDyanmicAcknowledge = false;
+            radio.IsDynamicPayload = true;
 
-            Debug.WriteLine($"Address: {Encoding.UTF8.GetString(Radio.Address)}");
-            Debug.WriteLine($"PowerLevel: {Radio.PowerLevel}");
-            Debug.WriteLine($"IsAutoAcknowledge: {Radio.IsAutoAcknowledge}");
-            Debug.WriteLine($"Channel: {Radio.Channel}");
-            Debug.WriteLine($"DataRate: {Radio.DataRate}");
-            Debug.WriteLine($"IsDynamicAcknowledge: {Radio.IsDyanmicAcknowledge}");
-            Debug.WriteLine($"IsDynamicPayload: {Radio.IsDynamicPayload}");
-            Debug.WriteLine($"IsEnabled: {Radio.IsEnabled}");
-            Debug.WriteLine($"Frequency: {Radio.Frequency}");
-            Debug.WriteLine($"IsInitialized: {Radio.IsInitialized}");
-            Debug.WriteLine($"IsPowered: {Radio.IsPowered}");
+            Debug.WriteLine($"Address: {Encoding.UTF8.GetString(radio.Address)}");
+            Debug.WriteLine($"PowerLevel: {radio.PowerLevel}");
+            Debug.WriteLine($"IsAutoAcknowledge: {radio.IsAutoAcknowledge}");
+            Debug.WriteLine($"Channel: {radio.Channel}");
+            Debug.WriteLine($"DataRate: {radio.DataRate}");
+            Debug.WriteLine($"IsDynamicAcknowledge: {radio.IsDyanmicAcknowledge}");
+            Debug.WriteLine($"IsDynamicPayload: {radio.IsDynamicPayload}");
+            Debug.WriteLine($"IsEnabled: {radio.IsEnabled}");
+            Debug.WriteLine($"Frequency: {radio.Frequency}");
+            Debug.WriteLine($"IsInitialized: {radio.IsInitialized}");
+            Debug.WriteLine($"IsPowered: {radio.IsPowered}");
 
             while (true)
             {
-               string payload = "hello " + DateTime.Now.Second;
+               string payload = $"hello {messageCount}";
+               messageCount -= 1;
+
                Debug.WriteLine($"{DateTime.UtcNow:HH:mm:ss}-TX {payload.Length} byte message {payload}");
-               Radio.SendTo(Encoding.UTF8.GetBytes(BaseStationAddress), Encoding.UTF8.GetBytes(payload));
+               radio.SendTo(Encoding.UTF8.GetBytes(BaseStationAddress), Encoding.UTF8.GetBytes(payload));
 
                Thread.Sleep(30000);
             }
@@ -81,8 +86,6 @@ namespace devMobile.IoT.FieldGateway.TinyCLRV2nRF24Client
          catch (Exception ex)
          {
             Debug.WriteLine(ex.Message);
-
-            return;
          }
       }
 
