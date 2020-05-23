@@ -42,18 +42,19 @@ namespace devMobile.IoT.FieldGateway.TinyCLRV2nRF24Client
             radio.OnTransmitSuccess += Radio_OnTransmitSuccess;
 
             // SC20100 Socket 1
-            //Radio.Initialize(SC20100.SpiBus.Spi3, SC20100.GpioPin.PD4, SC20100.GpioPin.PD3, SC20100.GpioPin.PC5);
+            //radio.Initialize(SC20100.SpiBus.Spi3, SC20100.GpioPin.PD4, SC20100.GpioPin.PD3, SC20100.GpioPin.PC5);
             // SC20100 Socket 2
             radio.Initialize(SC20100.SpiBus.Spi3, SC20100.GpioPin.PD15, SC20100.GpioPin.PD14, SC20100.GpioPin.PA8);
             radio.Address = Encoding.UTF8.GetBytes(DeviceAddress);
 
             radio.Channel = 15;
-            //Radio.PowerLevel = PowerLevel.Max;
-            //Radio.PowerLevel = PowerLevel.High;
-            //Radio.PowerLevel = PowerLevel.Low;
-            //Radio.PowerLevel = PowerLevel.Minimum
+            //radio.PowerLevel = PowerLevel.Max;
+            //radio.PowerLevel = PowerLevel.High;
+            //radio.PowerLevel = PowerLevel.Low;
+            radio.PowerLevel = PowerLevel.Minimum;
             radio.DataRate = DataRate.DR250Kbps;
-            //Radio.DataRate = DataRate.DR1Mbps;
+            //radio.DataRate = DataRate.DR1Mbps;
+            radio.DataRate = DataRate.DR2Mbps;
             radio.IsEnabled = true;
 
             radio.IsAutoAcknowledge = true;
