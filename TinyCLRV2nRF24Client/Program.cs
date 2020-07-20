@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+// Need one of TINYCLR_V2_SC20100DEV_MIKROBUS_1/TINYCLR_V2_SC20100DEV_MIKROBUS_2/TINYCLR_V2_FEZDUINO/TINYCLR_V2_FEZPORTAL defined
 //---------------------------------------------------------------------------------
 namespace devMobile.IoT.FieldGateway.TinyCLRV2nRF24Client
 {
@@ -41,10 +42,18 @@ namespace devMobile.IoT.FieldGateway.TinyCLRV2nRF24Client
             radio.OnTransmitFailed += Radio_OnTransmitFailed;
             radio.OnTransmitSuccess += Radio_OnTransmitSuccess;
 
-            // SC20100 Socket 1
-            //radio.Initialize(SC20100.SpiBus.Spi3, SC20100.GpioPin.PD4, SC20100.GpioPin.PD3, SC20100.GpioPin.PC5);
-            // SC20100 Socket 2
+#if TINYCLR_V2_SC20100DEV_MIKROBUS_1
+            radio.Initialize(SC20100.SpiBus.Spi3, SC20100.GpioPin.PD4, SC20100.GpioPin.PD3, SC20100.GpioPin.PC5);
+#endif
+#if TINYCLR_V2_SC20100DEV_MIKROBUS_2
             radio.Initialize(SC20100.SpiBus.Spi3, SC20100.GpioPin.PD15, SC20100.GpioPin.PD14, SC20100.GpioPin.PA8);
+#endif
+#if TINYCLR_V2_FEZDUINO
+            radio.Initialize(SC20100.SpiBus.Spi6, SC20100.GpioPin.PE11, SC20100.GpioPin.PC4, SC20100.GpioPin.PA1);
+#endif
+#if TINYCLR_V2_FEZPORTAL
+            radio.Initialize(SC20100.SpiBus.Spi3, SC20100.GpioPin.PD4, SC20100.GpioPin.PC13, SC20100.GpioPin.PC2);
+#endif
             radio.Address = Encoding.UTF8.GetBytes(DeviceAddress);
 
             radio.Channel = 15;
@@ -54,7 +63,7 @@ namespace devMobile.IoT.FieldGateway.TinyCLRV2nRF24Client
             radio.PowerLevel = PowerLevel.Minimum;
             radio.DataRate = DataRate.DR250Kbps;
             //radio.DataRate = DataRate.DR1Mbps;
-            radio.DataRate = DataRate.DR2Mbps;
+            //radio.DataRate = DataRate.DR2Mbps;
             radio.IsEnabled = true;
 
             radio.IsAutoAcknowledge = true;
