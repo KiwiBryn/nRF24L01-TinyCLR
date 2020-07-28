@@ -46,7 +46,8 @@ namespace devMobile.IoT.nRf24L01.ModuleSPI
             {
                ChipSelectType = SpiChipSelectType.Gpio,
                //ChipSelectLine = FEZ.GpioPin.D10,
-               ChipSelectLine = gpioController.OpenPin(SC20100.GpioPin.PD3),
+               //ChipSelectLine = gpioController.OpenPin(SC20100.GpioPin.PD3), //SC20100
+               ChipSelectLine = gpioController.OpenPin(SC20100.GpioPin.PC4), // Fezduino
                Mode = SpiMode.Mode0,
                //Mode = SpiMode.Mode1,
                //Mode = SpiMode.Mode2,
@@ -58,7 +59,8 @@ namespace devMobile.IoT.nRf24L01.ModuleSPI
                //ChipSelectSetupTime = new TimeSpan(0, 0, 0, 0, 500),
             };
 
-            var spiController = SpiController.FromName(SC20100.SpiBus.Spi3);
+            //var spiController = SpiController.FromName(SC20100.SpiBus.Spi3); //SC20100
+            var spiController = SpiController.FromName(SC20100.SpiBus.Spi6); // Fezduino
 
             Debug.WriteLine("nrf24L01Device Device...");
             nrf24L01Device = spiController.GetDevice(settings);
@@ -101,12 +103,13 @@ namespace devMobile.IoT.nRf24L01.ModuleSPI
             // Write Pipe0 Receive address
             Debug.WriteLine($"Write Pipe0 Receive Address {P0_Address}");
             byte[] txBuffer2 = new byte[addressWidthValue + 1];
+            byte[] rxBuffer2 = new byte[txBuffer2.Length];
             txBuffer2[0] = RX_ADDR_P0 | W_REGISTER;
             Array.Copy(Encoding.UTF8.GetBytes(P0_Address), 0, txBuffer2, 1, addressWidthValue);
 
             Debug.WriteLine(" nrf24L01Device.Write...RX_ADDR_P0");
             Debug.WriteLine(" txBuffer:" + BitConverter.ToString(txBuffer2));
-            nrf24L01Device.Write(txBuffer2);
+            nrf24L01Device.TransferFullDuplex(txBuffer2, rxBuffer2);
             Debug.WriteLine("");
 
             // Read Pipe0 Receive address
@@ -132,18 +135,18 @@ namespace devMobile.IoT.nRf24L01.ModuleSPI
             nrf24L01Device.TransferFullDuplex(txBuffer4, rxBuffer4);
             Debug.WriteLine(" rxBuffer:" + BitConverter.ToString(rxBuffer4));
 
-            ushort rfChannel1 = rxBuffer4[1];
-            rfChannel1 += 2400;
-            Debug.WriteLine($"RF Channel 1 0x{RF_CH:x2} - Value 0X{rxBuffer4[1]:x2} - Value adjusted {rfChannel1}");
+            byte rfChannel1 = rxBuffer4[1];
+            Debug.WriteLine($"RF Channel 1 0x{RF_CH:x2} - Value 0X{rxBuffer4[1]:x2} - Value adjusted {rfChannel1+2400}");
             Debug.WriteLine("");
 
             // Write the RF Channel
             Debug.WriteLine("RF Channel write");
-            byte[] txBuffer5 = new byte[] { RF_CH | W_REGISTER, rxBuffer4[1]+=1};
+            byte[] txBuffer5 = new byte[] { RF_CH | W_REGISTER, rfChannel1 +=1};
+            byte[] rxBuffer5 = new byte[txBuffer5.Length];
 
             Debug.WriteLine(" nrf24L01Device.Write...RF_CH");
             Debug.WriteLine(" txBuffer:" + BitConverter.ToString(txBuffer5));
-            nrf24L01Device.Write(txBuffer5);
+            nrf24L01Device.TransferFullDuplex(txBuffer5, rxBuffer5);
             Debug.WriteLine("");
 
             // Read the RF Channel
@@ -157,8 +160,7 @@ namespace devMobile.IoT.nRf24L01.ModuleSPI
             Debug.WriteLine(" rxBuffer:" + BitConverter.ToString(rxBuffer6));
 
             ushort rfChannel2 = rxBuffer6[1];
-            rfChannel2 += 2400;
-            Debug.WriteLine($"RF Channel 2 0x{RF_CH:x2} - Value 0X{rxBuffer6[1]:x2} - Value adjusted {rfChannel2}");
+            Debug.WriteLine($"RF Channel 2 0x{RF_CH:x2} - Value 0X{rxBuffer6[1]:x2} - Value adjusted {rfChannel2+2400}");
             Debug.WriteLine("");
          }
          catch (Exception ex)
