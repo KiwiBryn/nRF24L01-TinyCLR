@@ -46,8 +46,10 @@ namespace devMobile.IoT.nRf24L01.ModuleSPI
             {
                ChipSelectType = SpiChipSelectType.Gpio,
                //ChipSelectLine = FEZ.GpioPin.D10,
-               //ChipSelectLine = gpioController.OpenPin(SC20100.GpioPin.PD3), //SC20100
                ChipSelectLine = gpioController.OpenPin(SC20100.GpioPin.PC4), // Fezduino
+               //ChipSelectLine = gpioController.OpenPin(SC20100.GpioPin.PD3), //SC20100Dev Mikrobus 1
+               //ChipSelectLine = gpioController.OpenPin(SC20100.GpioPin.PD14), //SC20100Dev Mikrobus 2
+               //ChipSelectLine = gpioController.OpenPin(SC20100.GpioPin.PC13), // Fezportal
                Mode = SpiMode.Mode0,
                //Mode = SpiMode.Mode1,
                //Mode = SpiMode.Mode2,
@@ -59,8 +61,9 @@ namespace devMobile.IoT.nRf24L01.ModuleSPI
                //ChipSelectSetupTime = new TimeSpan(0, 0, 0, 0, 500),
             };
 
-            //var spiController = SpiController.FromName(SC20100.SpiBus.Spi3); //SC20100
             var spiController = SpiController.FromName(SC20100.SpiBus.Spi6); // Fezduino
+            //var spiController = SpiController.FromName(SC20100.SpiBus.Spi3); //SC20100 Mikrobus 1 & 2
+            //var spiController = SpiController.FromName(SC20100.SpiBus.Spi3); //Fez portal
 
             Debug.WriteLine("nrf24L01Device Device...");
             nrf24L01Device = spiController.GetDevice(settings);
