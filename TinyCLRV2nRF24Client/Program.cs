@@ -28,8 +28,22 @@ namespace devMobile.IoT.FieldGateway.TinyCLRV2nRF24Client
 
    class Program
    {
+#if TINYCLR_V2_FEZDUINO
       private const string BaseStationAddress = "Base1";
-      private const string DeviceAddress = "Dev01";
+      private const string DeviceAddress = "DUIN0";
+#endif
+#if TINYCLR_V2_FEZPORTAL
+      private const string BaseStationAddress = "Base1";
+      private const string DeviceAddress = "PORT1";
+#endif
+#if TINYCLR_V2_SC20100DEV_MIKROBUS_1
+      private const string BaseStationAddress = "Base1";
+      private const string DeviceAddress = "DEV01";
+#endif
+#if TINYCLR_V2_SC20100DEV_MIKROBUS_2
+      private const string BaseStationAddress = "Base1";
+      private const string DeviceAddress = "DEV02";
+#endif
 
       static void Main()
       {
@@ -55,7 +69,7 @@ namespace devMobile.IoT.FieldGateway.TinyCLRV2nRF24Client
             radio.Initialize(SC20100.SpiBus.Spi3, SC20100.GpioPin.PD4, SC20100.GpioPin.PC13, SC20100.GpioPin.PC2);
 #endif
             radio.Address = Encoding.UTF8.GetBytes(DeviceAddress);
-
+  
             radio.Channel = 15;
             //radio.PowerLevel = PowerLevel.Max;
             //radio.PowerLevel = PowerLevel.High;
